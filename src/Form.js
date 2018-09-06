@@ -1,4 +1,7 @@
 import React from 'react';
+import Validate from './Validate'
+import Ajax from './Ajax'
+import LiveSearch from './LiveSearch'
 
 class Form extends React.Component {
     constructor(props) {
@@ -16,13 +19,12 @@ class Form extends React.Component {
         this.submitData = this.submitData.bind(this);
     }
 
-    
-
     onChange = (event) => {
         const target = event.target;
         const value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
         var lsSource = [name][0];
+        console.log('field: ', name, 'value: ', value);
         //clear the error on resume typing
         let clEr = Object.assign({}, this.state.userNotify);
         clEr[name] = '';
@@ -123,8 +125,9 @@ class Form extends React.Component {
     }
 
     onSubmit = (event) => {
+        console.log('reactform submit...');
         event.preventDefault();
-        let val = new validate(this.state.formData);
+        let val = new Validate(this.state.formData);
         let prom = val.getPromise();
         prom.then((error) => {
             console.log('the error: ', error);
@@ -157,13 +160,21 @@ class Form extends React.Component {
             })
     }
 
-render() {
 
+
+render() {
+    const inputs = React.Children.map(this.props.children, child => 
+        React.cloneElement(child, {
+            value: this.state.value,
+            onChange: this.onChange,
+            error: this.userNotify
+        })
+    );
     return (
         <div id="form-container">
             <p className="formTitle">{this.props.formTitle}</p>
-            <form id={this.props.formID} >
-                {this.props.children} {/*there must be nested input components passed in*/}
+            <form id={this.props.formID} onSubmit={this.onSubmit} >
+                {inputs} {/*there must be nested input components passed in*/}
             </form>
         </div>
     )

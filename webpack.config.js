@@ -11,7 +11,7 @@ module.exports = {
     rules: [
       {
         test: /\.js$/,
-        exclude: "/node_modules/",//keeping react files around, but we're not going to use them for now
+        exclude: /node_modules/,
         use: {
           loader: "babel-loader"
         }
@@ -22,6 +22,7 @@ module.exports = {
     'react': 'commonjs react' // this line is just to use the React dependency of our parent-testing-project instead of using our own React.
     },
   watch: true,
-  mode: 'production',
+  mode: 'development',
+  performance: { hints: false },
   devtool: 'source-map'
 };
