@@ -24,7 +24,7 @@ class Form extends React.Component {
         const value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
         var lsSource = [name][0];
-        console.log('field: ', name, 'value: ', value);
+        //console.log('field: ', name, 'value: ', value);
         //clear the error on resume typing
         let clEr = Object.assign({}, this.state.userNotify);
         clEr[name] = '';
@@ -34,6 +34,7 @@ class Form extends React.Component {
         });
         //place updated data into state
         this.rebuildFormData(name, value, lsSource);
+       
         //run live search if applicable to current input, not othewise
         let ls = new LiveSearch();
         let list = ls.getLSA();
@@ -46,6 +47,7 @@ class Form extends React.Component {
         //place updated data into state
         let newVals = Object.assign({}, this.state.formData);
         newVals[name] = value;
+        //console.log('newVals name: ',newVals[name], 'newVals val: ',value);
         this.setState({
             [name]: value,
             lsSource: name,
@@ -59,7 +61,6 @@ class Form extends React.Component {
         let targetField = 'lsr' + lsSource;
         let ls = new LiveSearch();
         let list = ls.getLSA();
-        console.log('list: ', list);
         //first, if the input change leaves the field blank, clear the options list
         if (value === '') {
             this.setState({
@@ -77,7 +78,6 @@ class Form extends React.Component {
     }
 
     setLSRList(res, targetField) {
-        console.log('lsr:', res);
         //if there is not result, set a message for that, else, set the results into state
         let list = res.data.results;
         let newList;
@@ -87,7 +87,6 @@ class Form extends React.Component {
             newList = list.map((item) =>
                 <p className="lsr" onClick={(event) => this.lsrSelect(event)} id={item[Object.keys(item)[0]]}>{item[Object.keys(item)[0]]}</p>
             );
-            console.log('new list:', newList);
         }
         //place the "list" value into state
         this.setState({
@@ -110,7 +109,6 @@ class Form extends React.Component {
     autoFill = (id, val) => {
         const autofill = new AutoFill();
         var dest = autofill.getRef(id);
-        console.log('dest: ', dest);
         Ajax.get("http://localhost:3004/autofill/" + id + "/" + val)
             .then((res) => {
                 if (res.data.results) {
@@ -125,12 +123,10 @@ class Form extends React.Component {
     }
 
     onSubmit = (event) => {
-        console.log('reactform submit...');
         event.preventDefault();
-        let val = new Validate(this.state.formData);
+        let val = new Validate(this.state.bodyData);
         let prom = val.getPromise();
         prom.then((error) => {
-            console.log('the error: ', error);
             if (error.hasError) {
                 this.setState({
                     userNotify: error,
@@ -141,44 +137,39 @@ class Form extends React.Component {
                 this.setState({
                     validForm: true
                 })
-                console.log('about to submit...');
                 this.submitData();
             }
         })
     }
 
     submitData = () => {
-        console.log('submitting now...');
-        Ajax.post(this.props.route, this.state.formData)
-            .then((res) => {
-                if (res.data.success) {
-                    this.setState({
-                        success: res.data.success,
-                        userNotify: res.data.userNotify
-                    })
-                }
-            })
+        //console.log('fordata: ', this.state.formData, 'extra data: ', this.props.extraData);
+        var bodyData = Object.assign(this.props.extraData, this.state.formData);
+        console.log('new formdata object', bodyData);
+        Ajax.post(this.props.action, bodyData)
+            .then((resp) => {
+                this.setState({formData: {}});
+                this.props.response(resp.data);
+            });
     }
 
-
-
-render() {
-    const inputs = React.Children.map(this.props.children, child => 
-        React.cloneElement(child, {
-            value: this.state.value,
-            onChange: this.onChange,
-            error: this.userNotify
-        })
-    );
-    return (
-        <div id="form-container">
-            <p className="formTitle">{this.props.formTitle}</p>
-            <form id={this.props.formID} onSubmit={this.onSubmit} >
-                {inputs} {/*there must be nested input components passed in*/}
-            </form>
-        </div>
-    )
-};
+    render() {
+        const inputs = React.Children.map(this.props.children, child =>
+            React.cloneElement(child, {
+                value: this.state.value,
+                onChange: this.onChange,
+                error: this.userNotify
+            })
+        );
+        return (
+            <div id="form-container">
+                <p className="formTitle">{this.props.formTitle}</p>
+                <form id={this.props.formID} onSubmit={this.onSubmit} >
+                    {inputs} {/*there must be nested input components passed in*/}
+                </form>
+            </div>
+        )
+    };
 }
 
 export default Form;
