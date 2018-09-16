@@ -47,7 +47,7 @@ class Form extends React.Component {
         //place updated data into state
         let newVals = Object.assign({}, this.state.formData);
         newVals[name] = value;
-        //console.log('newVals name: ',newVals[name], 'newVals val: ',value);
+        //console.log('newVals name: ',name, 'newVals val: ',value);
         this.setState({
             [name]: value,
             lsSource: name,
@@ -143,13 +143,23 @@ class Form extends React.Component {
     }
 
     submitData = () => {
-        //console.log('fordata: ', this.state.formData, 'extra data: ', this.props.extraData);
-        var bodyData = Object.assign(this.props.extraData, this.state.formData);
-        console.log('new formdata object', bodyData);
+        //console.log('form data: ', this.state.formData, 'extra data: ', this.props.extraData);
+        let bodyData;
+        if(typeof this.props.extraData !== 'undefined') {
+            bodyData = Object.assign(this.props.extraData, this.state.formData);
+        } else {
+            bodyData = this.state.formData;
+        }
+        //console.log('new formdata object', bodyData);
         Ajax.post(this.props.action, bodyData)
             .then((resp) => {
-                this.setState({formData: {}});
-                this.props.response(resp.data);
+                if(resp.data.error !== 'undefined'){
+                    console.log('name error', resp.data.error);
+                    this.setState({ userNotify: resp.data.error });
+                }else{
+                    this.setState({formData: {}});
+                    this.props.response(resp.data);
+                    }
             });
     }
 
@@ -158,7 +168,7 @@ class Form extends React.Component {
             React.cloneElement(child, {
                 value: this.state.value,
                 onChange: this.onChange,
-                error: this.userNotify
+                error: this.state.userNotify[child.props.name]
             })
         );
         return (

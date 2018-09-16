@@ -2,7 +2,7 @@
 node_modules
 
 #source files
-src
+/src 
 
 #developement entry
 index.js
@@ -10,6 +10,4 @@ index.js
 #other development files
 .gitignore
 .eslintrc.json
-.babelrc
-webpack.config.js
 dist/bundle.js.map

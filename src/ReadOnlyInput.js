@@ -3,7 +3,14 @@ import React from 'react';
 class Input extends React.Component {
   constructor(props) {
     super(props);
+    this.state = { readOnlyVal: ''}
   }
+  static displayname = 'ReadOnlyInput';
+
+  componentDidMount = () => {
+    this.setState({readOnlyVal: this.props.readOnlyVal})
+  }
+
   render() {
 
     //make the password field type "password" so its contents are hidden
@@ -12,9 +19,6 @@ class Input extends React.Component {
       type = 'password';
     } else {
       type = '"text"';
-    }
-    if(this.props.lsr) {
-      var lsr = 'lsr' + this.props.name;
     }
 
     return (
@@ -25,14 +29,9 @@ class Input extends React.Component {
           type={type}
           id={this.props.name}
           name={this.props.name}
-          value={this.props.value}
-          onChange={this.props.onChange}
+          value={this.props.readOnlyVal}
           autoComplete="off"
-          readOnly
         />
-        { this.props.lsr ? (
-        <div id={lsr} className="search-result">{this.props.lsr}</div>
-        ) : ( null )}
       </div>
     );
   }
