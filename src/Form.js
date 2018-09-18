@@ -24,12 +24,9 @@ class Form extends React.Component {
         const value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
         var lsSource = [name][0];
-        //console.log('field: ', name, 'value: ', value);
         //clear the error on resume typing
-        let clEr = Object.assign({}, this.state.userNotify);
-        clEr[name] = '';
         this.setState({
-            userNotify: clEr,
+            userNotify: {},
             lsSource: lsSource
         });
         //place updated data into state
@@ -47,7 +44,6 @@ class Form extends React.Component {
         //place updated data into state
         let newVals = Object.assign({}, this.state.formData);
         newVals[name] = value;
-        //console.log('newVals name: ',name, 'newVals val: ',value);
         this.setState({
             [name]: value,
             lsSource: name,
@@ -132,10 +128,10 @@ class Form extends React.Component {
                     userNotify: error,
                     validForm: false
                 })
-            }
-            if (!error.hasError) {
+            }else {
                 this.setState({
-                    validForm: true
+                    validForm: true,
+                    userNotify: {}
                 })
                 this.submitData();
             }
@@ -143,24 +139,31 @@ class Form extends React.Component {
     }
 
     submitData = () => {
-        //console.log('form data: ', this.state.formData, 'extra data: ', this.props.extraData);
         let bodyData;
         if(typeof this.props.extraData !== 'undefined') {
             bodyData = Object.assign(this.props.extraData, this.state.formData);
         } else {
             bodyData = this.state.formData;
         }
-        //console.log('new formdata object', bodyData);
         Ajax.post(this.props.action, bodyData)
             .then((resp) => {
-                if(resp.data.error !== 'undefined'){
-                    console.log('name error', resp.data.error);
-                    this.setState({ userNotify: resp.data.error });
-                }else{
-                    this.setState({formData: {}});
+                if(typeof resp.data.error == 'undefined'){
+                    this.setState({
+                        formData: {},
+                        userNotify: {},
+                        value: ''
+                    });
                     this.props.response(resp.data);
+                }else{
+                    this.setState({ 
+                        userNotify: resp.data.error
+                    });
                     }
             });
+    }
+
+    componentWillUnmount = () => {
+        this.setState({userNotify: {}});
     }
 
     render() {

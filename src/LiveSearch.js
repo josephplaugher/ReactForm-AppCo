@@ -14,7 +14,7 @@ class LiveSearch {
 
     search = (name, value) => {
         return new Promise( (resolve, reject) => {
-        Ajax.get("http://localhost:3004/LiveSearch/"+ name +"."+ value + "/")
+        Ajax.get(url)
             .then((res) => {
                 resolve(res);
                 reject(res.data.error);

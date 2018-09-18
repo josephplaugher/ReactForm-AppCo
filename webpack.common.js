@@ -13,16 +13,13 @@ module.exports = {
         test: /\.js$/,
         exclude: /node_modules/,
         use: {
-          loader: "babel-loader"
+          loader: "babel-loader",query: {compact: true}
         }
       }
     ]
   },
   externals: {
-    'react': 'commonjs react' // this line is just to use the React dependency of our parent-testing-project instead of using our own React.
-    },
-  watch: true,
-  mode: 'development',
-  performance: { hints: false },
-  devtool: 'source-map'
+    'react': 'commonjs react', // this line is just to use the React dependency of our parent-testing-project instead of using our own React.
+    'axios': 'commonjs axios'  
+  }
 };
