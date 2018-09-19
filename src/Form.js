@@ -17,6 +17,7 @@ class Form extends React.Component {
         this.onChange = this.onChange.bind(this);
         this.lsrSelect = this.lsrSelect.bind(this);
         this.submitData = this.submitData.bind(this);
+        this.restoreInputHandler = this.restoreInputHandler.bind(this);
     }
 
     onChange = (event) => {
@@ -151,8 +152,10 @@ class Form extends React.Component {
                     this.setState({
                         formData: {},
                         userNotify: {},
-                        value: ''
+                        value: '', //clear the input fields
+                        restoreValue: this.state.value //set the current value state in another object to restore later
                     });
+                    this.restoreInputHandler();
                     this.props.response(resp.data);
                 }else{
                     this.setState({ 
@@ -162,10 +165,12 @@ class Form extends React.Component {
             });
     }
 
-    componentWillUnmount = () => {
-        this.setState({userNotify: {}});
+    restoreInputHandler = () => {
+        this.setState({
+            value: this.state.restoreValue //restore the value state back to the value object
+        });
     }
-
+ 
     render() {
         const inputs = React.Children.map(this.props.children, child =>
             React.cloneElement(child, {
