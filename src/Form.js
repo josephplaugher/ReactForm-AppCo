@@ -148,20 +148,30 @@ class Form extends React.Component {
         }
         Ajax.post(this.props.action, bodyData)
             .then((resp) => {
-                if(typeof resp.data.error == 'undefined'){
-                    this.setState({
-                        formData: {},
-                        userNotify: {},
-                        value: '', //clear the input fields
-                        restoreValue: this.state.value //set the current value state in another object to restore later
-                    });
+                if (typeof resp.data.error == 'undefined') {
+                    console.log('clear?', this.props.clearOnSubmit);
+                    if (this.props.clearOnSubmit === 'false') {
+                        console.log('dont clear it');
+                        this.setState({
+                                formData: {}, 
+                                userNotify: {}, 
+                            });
+                    } else {
+                            console.log('clear it');
+                        this.setState({
+                                formData: {},
+                                userNotify: {},
+                                value: '', //clear the input fields
+                                restoreValue: this.state.value //set the current value state in another object to restore later
+                            });
+                    }
                     this.restoreInputHandler();
                     this.props.response(resp.data);
-                }else{
-                    this.setState({ 
+                } else {
+                    this.setState({
                         userNotify: resp.data.error
                     });
-                    }
+                }
             });
     }
 
