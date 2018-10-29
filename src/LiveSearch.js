@@ -12,9 +12,9 @@ class LiveSearch {
         return this.lsa;
     }
 
-    search = (name, value) => {
+    search = (name, value, url) => {
         return new Promise( (resolve, reject) => {
-        Ajax.get(url)
+        Ajax.get(url + 'name.value')
             .then((res) => {
                 resolve(res);
                 reject(res.data.error);

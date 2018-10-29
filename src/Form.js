@@ -16,6 +16,7 @@ class Form extends React.Component {
         this.onSubmit = this.onSubmit.bind(this);
         this.onChange = this.onChange.bind(this);
         this.lsrSelect = this.lsrSelect.bind(this);
+        this.isArray = this.isArray.bind(this);
         this.submitData = this.submitData.bind(this);
         this.restoreInputHandler = this.restoreInputHandler.bind(this);
     }
@@ -34,15 +35,17 @@ class Form extends React.Component {
         this.rebuildFormData(name, value, lsSource);
        
         //run live search if applicable to current input, not othewise
-        let ls = new LiveSearch();
-        let list = ls.getLSA();
-        if (list.includes(name)) {
-            this.runLiveSearch(name, value, lsSource);
-        }
+        //let ls = new LiveSearch();
+        //let list = ls.getLSA();
+        //if (list.includes(name)) {
+          //  this.runLiveSearch(name, value, lsSource);
+        //}
     }
 
     rebuildFormData = (name, value, lsSource) => {
         //place updated data into state
+        //check for possible arrays
+        let isArray = this.isArray(name, value);
         let newVals = Object.assign({}, this.state.formData);
         newVals[name] = value;
         this.setState({
@@ -50,6 +53,17 @@ class Form extends React.Component {
             lsSource: name,
             formData: newVals
         });
+    }
+
+    isArray = (name, value) => {
+        let a = this.state.formData;
+        for(input in a){
+            if(name === input) {
+                    var newArray = [];
+                    newArray.push(a[name]);
+                    newArray.push(value);
+            }
+        }
     }
 
     runLiveSearch(name, value, lsSource) {
@@ -66,7 +80,7 @@ class Form extends React.Component {
             //if the input value is not blank, fetch the options
         } else {
             if (list.includes(name)) {
-                let prom = ls.search(name, value);
+                let prom = ls.search(name, value, this.props.lsrURL);
                 prom.then((res) => {
                     this.setLSRList(res, targetField);
                 })
@@ -149,15 +163,12 @@ class Form extends React.Component {
         Ajax.post(this.props.action, bodyData)
             .then((resp) => {
                 if (typeof resp.data.error == 'undefined') {
-                    console.log('clear?', this.props.clearOnSubmit);
                     if (this.props.clearOnSubmit === 'false') {
-                        console.log('dont clear it');
                         this.setState({
-                                formData: {}, 
-                                userNotify: {}, 
+                                
+                                userNotify: {}
                             });
                     } else {
-                            console.log('clear it');
                         this.setState({
                                 formData: {},
                                 userNotify: {},
