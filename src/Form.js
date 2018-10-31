@@ -135,8 +135,8 @@ class Form extends React.Component {
 
     onSubmit = (event) => {
         event.preventDefault();
-        let val = new Validate(this.state.bodyData);
-        let prom = val.getPromise();
+        let val = new Validate(this.state.bodyData, this.props.valrules);
+        let prom = val.isError();
         prom.then((error) => {
             if (error.hasError) {
                 this.setState({
