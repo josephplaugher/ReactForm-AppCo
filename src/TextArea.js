@@ -12,9 +12,8 @@ class TextArea extends React.Component {
 
     return (
       <div className="input-container">
-        <p className="label">{this.props.label} </p>
-        <p className='input-error'>{this.props.error} </p>
-        <textarea className="textarea"
+        <p className={this.props.labelClass}>{this.props.label} </p><br />
+         <textarea className="textarea"
           id={this.props.name}
           name={this.props.name}
           onChange={this.props.onChange}
@@ -22,6 +21,7 @@ class TextArea extends React.Component {
           rows={this.props.rows}
           cols={this.props.cols}
         />
+        <p className={this.props.textAreaErrorClass}>{this.props.error} </p>
         { this.props.lsr ? (
         <div id={lsr} className="search-result">{this.props.lsr}</div>
         ) : ( null )}

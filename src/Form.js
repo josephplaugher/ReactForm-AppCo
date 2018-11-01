@@ -12,13 +12,22 @@ class Form extends React.Component {
             formData: {},
             lsr: {}, //live search result. list of value from live search
         };
-        this.route = '';
         this.onSubmit = this.onSubmit.bind(this);
         this.onChange = this.onChange.bind(this);
         this.lsrSelect = this.lsrSelect.bind(this);
-        this.isArray = this.isArray.bind(this);
+        //this.isArray = this.isArray.bind(this);
         this.submitData = this.submitData.bind(this);
         this.restoreInputHandler = this.restoreInputHandler.bind(this);
+    }
+
+    componentDidMount = () => {
+        let inputs ={}
+        React.Children.map(this.props.children, child => {
+            if(child.type.name === 'Input' || child.type.name === 'TextArea') {
+                inputs[child.props.name] = '';
+            }
+        });        
+        this.setState({ formData: inputs});
     }
 
     onChange = (event) => {
@@ -43,9 +52,10 @@ class Form extends React.Component {
     }
 
     rebuildFormData = (name, value, lsSource) => {
+        console.log('rebuild: ', name, value)
         //place updated data into state
         //check for possible arrays
-        let isArray = this.isArray(name, value);
+        //let isArray = this.isArray(name, value);
         let newVals = Object.assign({}, this.state.formData);
         newVals[name] = value;
         this.setState({
@@ -55,6 +65,7 @@ class Form extends React.Component {
         });
     }
 
+    /*
     isArray = (name, value) => {
         let a = this.state.formData;
         for(input in a){
@@ -65,7 +76,7 @@ class Form extends React.Component {
             }
         }
     }
-
+*/
     runLiveSearch(name, value, lsSource) {
         //get a list of options as the user types ,like Google live search
         //set the name of the location to place the search result. The inputs must have a "lsr={this.state.lsr}""
@@ -135,9 +146,10 @@ class Form extends React.Component {
 
     onSubmit = (event) => {
         event.preventDefault();
-        let val = new Validate(this.state.bodyData, this.props.valrules);
+        let val = new Validate(this.state.formData, this.props.valrules);
         let prom = val.isError();
         prom.then((error) => {
+            console.log('val error?', error)
             if (error.hasError) {
                 this.setState({
                     userNotify: error,
@@ -200,6 +212,9 @@ class Form extends React.Component {
                 error: this.state.userNotify[child.props.name]
             })
         );
+
+        //React.Children.map(this.props.children, child => this.getInitialInputs(child))
+            
         return (
             <div id="form-container">
                 <p className="formTitle">{this.props.formTitle}</p>

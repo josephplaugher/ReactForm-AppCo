@@ -4,6 +4,7 @@ class Input extends React.Component {
   constructor(props) {
     super(props);
   }
+
   render() {
 
     //make the password field type "password" so its contents are hidden
