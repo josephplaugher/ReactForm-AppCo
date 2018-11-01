@@ -27,6 +27,7 @@ class Form extends React.Component {
                 inputs[child.props.name] = '';
             }
         });        
+        console.log('inputs: ', inputs)
         this.setState({ formData: inputs});
     }
 
