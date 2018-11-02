@@ -19,7 +19,6 @@ class validate {
 
     startValidation = () => {
         console.log('starting validation')
-        console.log('the inputs: ', this.inputs)
         for(var name in this.inputs) {
             this.valRules.forEach(rule => {
                 if(name === rule.name) {

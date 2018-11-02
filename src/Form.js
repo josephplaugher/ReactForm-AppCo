@@ -12,24 +12,42 @@ class Form extends React.Component {
             formData: {},
             lsr: {}, //live search result. list of value from live search
         };
+        //this.addFieldToInput = this.addFieldToInput.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
         this.onChange = this.onChange.bind(this);
         this.lsrSelect = this.lsrSelect.bind(this);
-        //this.isArray = this.isArray.bind(this);
         this.submitData = this.submitData.bind(this);
         this.restoreInputHandler = this.restoreInputHandler.bind(this);
     }
 
     componentDidMount = () => {
-        let inputs ={}
+        var inputs = {}
         React.Children.map(this.props.children, child => {
             if(child.type.name === 'Input' || child.type.name === 'TextArea') {
+                //inputs = Object.assign(inputs, this.addFieldToInput(child.props.name, inputs));
                 inputs[child.props.name] = '';
             }
-        });        
-        console.log('inputs: ', inputs)
+        });    
+        //console.log('the inputs', inputs)
         this.setState({ formData: inputs});
     }
+/*
+    addFieldToInput = (name, inputs) => {
+        if(name.slice(-2) === '[]'){
+            //if an array of inputs with the same name are provided, we create an array
+                //first check to see if that array exists
+                //if the array doesn't exist, create it
+                if(!inputs.hasOwnProperty([name])) { 
+                    inputs[name] = [];
+                } 
+            inputs[name].push('');
+        //if the field isn't marked as an array, just add it to the object
+        }else{
+            inputs[name] = '';
+        }
+        return inputs;
+    }
+    */
 
     onChange = (event) => {
         const target = event.target;
@@ -168,11 +186,14 @@ class Form extends React.Component {
 
     submitData = () => {
         let bodyData;
+
+        console.log('before bodydata: ', this.state.formData)
         if(typeof this.props.extraData !== 'undefined') {
             bodyData = Object.assign(this.props.extraData, this.state.formData);
         } else {
             bodyData = this.state.formData;
         }
+        console.log('after bodydata: ', bodyData)
         Ajax.post(this.props.action, bodyData)
             .then((resp) => {
                 if (typeof resp.data.error == 'undefined') {
