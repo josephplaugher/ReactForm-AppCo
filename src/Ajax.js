@@ -9,6 +9,7 @@ const get = (url) => {
 }
 
 const post = (url, formData) => {
+    console.log('the url: ', url)
     const request = axios({
         url: url,
         method: 'post',

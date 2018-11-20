@@ -8,7 +8,7 @@ class validate {
     }
 
     preValidation = () => {
-        console.log('the rueles', this.valRules)
+        //console.log('the rueles', this.valRules)
         return this.valRules.mode === 'debug' ? console.log('validation module running in debug mode. No rules will be enforced') 
         :   this.valRules.mode === 'development' ? this.valRules.log.dev('Validation running in development mode')
         :   this.valRules.mode === 'production' ? this.valRules.log.prod('Validation running in production mode')
@@ -18,7 +18,7 @@ class validate {
     }
 
     startValidation = () => {
-        console.log('starting validation')
+        //console.log('starting validation')
         for(var name in this.inputs) {
             this.valRules.forEach(rule => {
                 if(name === rule.name) {
