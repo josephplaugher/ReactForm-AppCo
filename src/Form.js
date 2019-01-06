@@ -10,7 +10,7 @@ class Form extends React.Component {
             error: {},
             userNotify: {},
             formData: {},
-            lsr: {}, //live search result. list of value from live search
+            lsr: {} //live search result. list of value from live search,
         };
         this.onSubmit = this.onSubmit.bind(this);
         this.onChange = this.onChange.bind(this);
@@ -163,7 +163,6 @@ class Form extends React.Component {
         //console.log('after bodydata: ', bodyData)
         Ajax.post(this.props.action, bodyData)
             .then((resp) => {
-                console.log('sign in resp: ', resp)
                 if (typeof resp.data.error == 'undefined') {
                     if (this.props.clearOnSubmit === 'false') {
                         this.setState({

@@ -18,7 +18,7 @@ class validate {
     }
 
     startValidation = () => {
-        //console.log('starting validation')
+        console.log('inputs: ', this.inputs, 'rules: ', this.valRules)
         for(var name in this.inputs) {
             this.valRules.forEach(rule => {
                 if(name === rule.name) {
@@ -43,7 +43,7 @@ class validate {
         }
         //check for numeric only input
         if(rule.hasOwnProperty('numeric')) {
-            this.numeric(val) ? true : this.setErrorMessage(name, rule.errorMsg);
+            this.numeric(val) ? this.setErrorMessage(name, rule.errorMsg) : false
         }
         //check for decimal format input
         if(rule.hasOwnProperty('decimal')) {
@@ -74,7 +74,7 @@ class validate {
     }
 
     numeric = (val) => {
-        return (typeof val == 'number')
+        return (isNaN(val))
     }
 
     restricted = (val, characters) => {
