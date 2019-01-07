@@ -16,12 +16,7 @@ class Input extends React.Component {
     }
     if(this.props.lsr) {
       var lsr = 'lsr' + this.props.name;
-    }
-
-    if(typeof this.props.prePopVal === 'undefined')
-      var value = this.props.value;
-    else
-      var value = this.props.prePopVal;
+    }    
 
     return (
       <div className="input-container">
@@ -31,7 +26,7 @@ class Input extends React.Component {
           type={type}
           id={this.props.name}
           name={this.props.name}
-          value={this.props.value || this.props.prePopVal}
+          value={this.props.prePopVal || this.props.value}
           onChange={this.props.onChange}
           autoComplete="off"
         />
