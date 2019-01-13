@@ -10,7 +10,8 @@ class Form extends React.Component {
             error: {},
             userNotify: {},
             formData: {},
-            lsr: {} //live search result. list of value from live search,
+            lsr: {}, //live search result. list of value from live search
+            targetfield: ''
         };
         this.onSubmit = this.onSubmit.bind(this);
         this.onChange = this.onChange.bind(this);
@@ -37,17 +38,19 @@ class Form extends React.Component {
         //clear the error on resume typing
         this.setState({
             userNotify: {},
-            lsSource: lsSource
+            lsSource: lsSource,
+            targetfield: lsSource
         });
         //place updated data into state
         this.rebuildFormData(name, value, lsSource);
        
         //run live search if applicable to current input, not othewise
-        //let ls = new LiveSearch();
-        //let list = ls.getLSA();
-        //if (list.includes(name)) {
-          //  this.runLiveSearch(name, value, lsSource);
-        //}
+        const ls = new LiveSearch(this.props.lsa);
+        const list = ls.getLSA();
+        if (list.includes(name)) {
+            //console.log('about to runLiveSearch: ',name, value, lsSource)
+            this.runLiveSearch(ls, name, value, lsSource);
+        }
     }
 
     rebuildFormData = (name, value, lsSource) => {
@@ -62,42 +65,50 @@ class Form extends React.Component {
         });
     }
 
-    runLiveSearch(name, value, lsSource) {
+    runLiveSearch(ls, name, value, lsSource) {
         //get a list of options as the user types ,like Google live search
         //set the name of the location to place the search result. The inputs must have a "lsr={this.state.lsr}""
-        let targetField = 'lsr' + lsSource;
-        let ls = new LiveSearch();
-        let list = ls.getLSA();
-        //first, if the input change leaves the field blank, clear the options list
+        let targetfield = lsSource;
+        //console.log('why array? ', targetfield)
+        //first, if the input change leaves the field blank,
+        //clear the options list
         if (value === '') {
             this.setState({
-                [targetField]: ''
+                [targetfield]: ''
             });
-            //if the input value is not blank, fetch the options
+        //if the input value is not blank, fetch the options
         } else {
-            if (list.includes(name)) {
+            if (ls.getLSA().includes(name)) {
                 let prom = ls.search(name, value, this.props.lsrURL);
                 prom.then((res) => {
-                    this.setLSRList(res, targetField);
+                    //console.log('search result: ', res)
+                    //run the function to build the react component
+                    //that contains the result set.
+                    //takes the result of the ajax reques and
+                    //the name of the field in question
+                    this.setLSRList(res, [targetfield][0]);
                 })
             }
         }//else
     }
 
-    setLSRList(res, targetField) {
-        //if there is not result, set a message for that, else, set the results into state
-        let list = res.data.results;
-        let newList;
-        if (res.data.nr) {
-            newList = res.data.nr;
+    setLSRList(res, targetfield) {
+        //console.log('lsr result: ', res, 'target field: ', targetfield)
+        //if there is no result, set a message for that, else, set the results into state
+        var list = res.data.lsrResult;
+        var newList;
+        if (list === undefined) {
+            newList = res.data.noResult;
         } else {
             newList = list.map((item) =>
                 <p className="lsr" onClick={(event) => this.lsrSelect(event)} id={item[Object.keys(item)[0]]}>{item[Object.keys(item)[0]]}</p>
             );
         }
+        console.log('the target field: ', targetfield, 'ls result: ', list)
         //place the "list" value into state
         this.setState({
-            [targetField]: newList
+            targetfield: targetfield,
+            lsr: newList
         });
     }
 
@@ -198,7 +209,9 @@ class Form extends React.Component {
             React.cloneElement(child, {
                 value: this.state.value,
                 onChange: this.onChange,
-                error: this.state.userNotify[child.props.name]
+                error: this.state.userNotify[child.props.name],
+                lsr: this.state.lsr,
+                targetfield: this.state.targetfield
             })
         );
             

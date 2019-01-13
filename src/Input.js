@@ -3,6 +3,13 @@ import React from 'react';
 class Input extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {list: ''};
+  }
+
+  componentWillUpdate = () => {
+    if(this.props.targetfield === this.props.name) {
+    console.log('in input comp: target field prop:', this.props.targetfield,' this component name: ', this.props.name, ' lsr: ', this.props.lsr)
+    }
   }
 
   render() {
@@ -14,9 +21,24 @@ class Input extends React.Component {
     } else {
       type = '"text"';
     }
-    if(this.props.lsr) {
+    /*
+    if (this.props.lsr) {
       var lsr = 'lsr' + this.props.name;
-    }    
+    }
+    */
+
+    //if the targetField prop matches the name prop, 
+    //populate this.state.list with the search results
+    {this.props.targetfield === this.props.name ? (
+      () => {
+        console.log('live search in Input running')
+        console.log('the result set: ', this.props.lsr)
+        var List = this.props.lsr.map((list) =>
+          <div id={list} className="search-result">{list}</div>
+        )
+        this.setState({list: List})
+      }
+    ) : ( null )}
 
     return (
       <div className="input-container">
@@ -30,11 +52,9 @@ class Input extends React.Component {
           onChange={this.props.onChange}
           autoComplete="off"
         />
-        { this.props.lsr ? (
-        <div id={lsr} className="search-result">{this.props.lsr}</div>
-        ) : ( null )}
+        <div>{this.state.list}</div>
       </div>
-    );
+    )
   }
 }
 

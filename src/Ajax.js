@@ -3,7 +3,7 @@ import axios from 'axios'
 const get = (url) => {
     const request = axios({
         method: 'get', url: url,
-        responseType: 'JSON'
+        responseType: 'json'
     });
     return request;
 }

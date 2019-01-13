@@ -1,11 +1,12 @@
 import Ajax from './Ajax'
 
 class LiveSearch {
-    constructor(){
-        //live search array for locating these values for the form
-        this.lsa = ['acctname','acctno','bankname','bankno','customer','customerid,supplier','supplierid',
-        'prop-id','prop-ein','prop-entityname','prop-shortname',
-        'prop-type','prop-street','prop-city','prop-state','prop-zip'];
+    constructor(lsa){
+        //set live search array 
+        //this determined was fields will
+        //trigger a live search
+        this.lsa = lsa
+        //console.log('live search array in constructor: ',lsa)
     }
 
     getLSA = () => {
@@ -13,12 +14,15 @@ class LiveSearch {
     }
 
     search = (name, value, url) => {
+        //console.log('ls url with rfa: ', url)
         return new Promise( (resolve, reject) => {
         Ajax.get(url + 'name.value')
             .then((res) => {
-                resolve(res);
-                reject(res.data.error);
-                });
+                resolve(res)
+            })
+            .catch((error) => {
+                reject(error)
+            })
         });
     }
 }
