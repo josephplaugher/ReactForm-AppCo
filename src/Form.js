@@ -39,7 +39,8 @@ class Form extends React.Component {
         this.setState({
             userNotify: {},
             lsSource: lsSource,
-            targetfield: lsSource
+            targetfield: lsSource,
+            lsr: [] 
         });
         //place updated data into state
         this.rebuildFormData(name, value, lsSource);
@@ -48,7 +49,6 @@ class Form extends React.Component {
         const ls = new LiveSearch(this.props.lsa);
         const list = ls.getLSA();
         if (list.includes(name)) {
-            //console.log('about to runLiveSearch: ',name, value, lsSource)
             this.runLiveSearch(ls, name, value, lsSource);
         }
     }
@@ -69,7 +69,6 @@ class Form extends React.Component {
         //get a list of options as the user types ,like Google live search
         //set the name of the location to place the search result. The inputs must have a "lsr={this.state.lsr}""
         let targetfield = lsSource;
-        //console.log('why array? ', targetfield)
         //first, if the input change leaves the field blank,
         //clear the options list
         if (value === '') {
@@ -81,7 +80,6 @@ class Form extends React.Component {
             if (ls.getLSA().includes(name)) {
                 let prom = ls.search(name, value, this.props.lsrURL);
                 prom.then((res) => {
-                    console.log('search result: ', res.data.lsrResult)
                     //run the function to build the react component
                     //that contains the result set.
                     //takes the result of the ajax reques and
@@ -93,7 +91,6 @@ class Form extends React.Component {
     }
 
     setLSRList(res, targetfield) {
-        //console.log('lsr result: ', res, 'target field: ', targetfield)
         //if there is no result, set a message for that, else, set the results into state
         var list = res.data.lsrResult;
         var newList;
@@ -102,7 +99,6 @@ class Form extends React.Component {
         } else {
             newList = list;
         }
-        console.log('the target field: ', targetfield, '. ls result: ', newList)
         //place the "list" value into state
         this.setState({
             targetfield: targetfield,
@@ -143,14 +139,12 @@ class Form extends React.Component {
         let val = new Validate(this.state.formData, this.props.valrules);
         let prom = val.isError();
         prom.then((error) => {
-            //console.log('val error?', error)
             if (error.hasError) {
                 this.setState({
                     userNotify: error,
                     validForm: false
                 })
             }else {
-                //console.log('no errors')
                 this.setState({
                     validForm: true,
                     userNotify: {}
@@ -162,14 +156,11 @@ class Form extends React.Component {
 
     submitData = () => {
         let bodyData;
-
-        //console.log('before bodydata: ', this.state.formData)
         if(typeof this.props.extraData !== 'undefined') {
             bodyData = Object.assign(this.props.extraData, this.state.formData);
         } else {
             bodyData = this.state.formData;
         }
-        //console.log('after bodydata: ', bodyData)
         Ajax.post(this.props.action, bodyData)
             .then((resp) => {
                 if (typeof resp.data.error == 'undefined') {

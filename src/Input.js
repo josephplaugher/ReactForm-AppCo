@@ -15,22 +15,15 @@ class Input extends React.Component {
     } else {
       type = '"text"';
     }
-    /*
-    if (this.props.lsr) {
-      var lsr = 'lsr' + this.props.name;
-    }
-    */
 
     //if the targetField prop matches the name prop, 
-    //populate this.state.list with the search results
+    //populate List with the search results
     if(this.props.targetfield === this.props.name) {
-      console.log('in input comp: target field prop:', this.props.targetfield,' this component name: ', this.props.name, ' lsr: ', this.props.lsr)
-      const list = this.props.lsr;
-      console.log('the list: ',list)
-      var List = list.map((item) =>
-          <div key={'lsr' + this.props.targetfield + 'key'}>
-          <p className="lsr" onClick={(event) => this.lsrSelect(event)} id={item[Object.keys(item)[0]]}>{item[Object.keys(item)[0]]}</p>
-          </div>
+      var List = this.props.lsr.map((item) =>
+          <p className="lsr" onClick={(event) => this.props.lsrSelect(event)} 
+              id={item[Object.keys(item)[0]]} 
+              key={item[Object.keys(item)[0]]}>{item[Object.keys(item)[1]]}
+          </p>
         );
     }
 

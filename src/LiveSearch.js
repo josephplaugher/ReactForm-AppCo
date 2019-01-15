@@ -2,11 +2,10 @@ import Ajax from './Ajax'
 
 class LiveSearch {
     constructor(lsa){
-        //set live search array 
-        //this determined was fields will
+        //Set live search array. 
+        //this determines what fields will
         //trigger a live search
         this.lsa = lsa
-        //console.log('live search array in constructor: ',lsa)
     }
 
     getLSA = () => {
@@ -14,7 +13,6 @@ class LiveSearch {
     }
 
     search = (name, value, url) => {
-        //console.log('ls url with rfa: ', url)
         return new Promise( (resolve, reject) => {
         Ajax.get(url + '/name/' + name + '/value/' + value)
             .then((res) => {
