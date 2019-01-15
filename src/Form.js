@@ -81,7 +81,7 @@ class Form extends React.Component {
             if (ls.getLSA().includes(name)) {
                 let prom = ls.search(name, value, this.props.lsrURL);
                 prom.then((res) => {
-                    //console.log('search result: ', res)
+                    console.log('search result: ', res.data.lsrResult)
                     //run the function to build the react component
                     //that contains the result set.
                     //takes the result of the ajax reques and
@@ -100,9 +100,7 @@ class Form extends React.Component {
         if (list === undefined) {
             newList = res.data.noResult;
         } else {
-            newList = list.map((item) =>
-                <p className="lsr" onClick={(event) => this.lsrSelect(event)} id={item[Object.keys(item)[0]]}>{item[Object.keys(item)[0]]}</p>
-            );
+            newList = list;
         }
         console.log('the target field: ', targetfield, 'ls result: ', list)
         //place the "list" value into state
@@ -221,6 +219,7 @@ class Form extends React.Component {
                 <form id={this.props.formID} onSubmit={this.onSubmit} >
                     {inputs} {/*there must be nested input components passed in*/}
                 </form>
+                the result: {this.state.newList}
             </div>
         )
     };

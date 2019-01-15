@@ -6,12 +6,6 @@ class Input extends React.Component {
     this.state = {list: ''};
   }
 
-  componentWillUpdate = () => {
-    if(this.props.targetfield === this.props.name) {
-    console.log('in input comp: target field prop:', this.props.targetfield,' this component name: ', this.props.name, ' lsr: ', this.props.lsr)
-    }
-  }
-
   render() {
 
     //make the password field type "password" so its contents are hidden
@@ -29,16 +23,14 @@ class Input extends React.Component {
 
     //if the targetField prop matches the name prop, 
     //populate this.state.list with the search results
-    {this.props.targetfield === this.props.name ? (
-      () => {
-        console.log('live search in Input running')
-        console.log('the result set: ', this.props.lsr)
-        var List = this.props.lsr.map((list) =>
-          <div id={list} className="search-result">{list}</div>
-        )
-        this.setState({list: List})
-      }
-    ) : ( null )}
+    if(this.props.targetfield === this.props.name) {
+      console.log('in input comp: target field prop:', this.props.targetfield,' this component name: ', this.props.name, ' lsr: ', this.props.lsr)
+        var List = this.props.lsr.map((item) =>
+          <div key={'lsr' + targetfield + 'key'}>
+          <p className="lsr" onClick={(event) => this.lsrSelect(event)} id={item[Object.keys(item)[0]]}>{item[Object.keys(item)[0]]}</p>
+          </div>
+        );
+    }
 
     return (
       <div className="input-container">
@@ -52,7 +44,7 @@ class Input extends React.Component {
           onChange={this.props.onChange}
           autoComplete="off"
         />
-        <div>{this.state.list}</div>
+        <div id="liveSearchResult" className="search-result">{List}</div>
       </div>
     )
   }

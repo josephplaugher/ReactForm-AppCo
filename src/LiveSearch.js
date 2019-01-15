@@ -16,7 +16,7 @@ class LiveSearch {
     search = (name, value, url) => {
         //console.log('ls url with rfa: ', url)
         return new Promise( (resolve, reject) => {
-        Ajax.get(url + 'name.value')
+        Ajax.get(url + '/name/' + name + '/value/' + value)
             .then((res) => {
                 resolve(res)
             })
