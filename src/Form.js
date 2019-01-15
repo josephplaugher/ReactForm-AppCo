@@ -10,7 +10,7 @@ class Form extends React.Component {
             error: {},
             userNotify: {},
             formData: {},
-            lsr: {}, //live search result. list of value from live search
+            lsr: [], //live search result. list of value from live search
             targetfield: ''
         };
         this.onSubmit = this.onSubmit.bind(this);
@@ -102,7 +102,7 @@ class Form extends React.Component {
         } else {
             newList = list;
         }
-        console.log('the target field: ', targetfield, 'ls result: ', list)
+        console.log('the target field: ', targetfield, '. ls result: ', newList)
         //place the "list" value into state
         this.setState({
             targetfield: targetfield,
@@ -219,7 +219,6 @@ class Form extends React.Component {
                 <form id={this.props.formID} onSubmit={this.onSubmit} >
                     {inputs} {/*there must be nested input components passed in*/}
                 </form>
-                the result: {this.state.newList}
             </div>
         )
     };
