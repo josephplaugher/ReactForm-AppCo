@@ -20,7 +20,7 @@ class Input extends React.Component {
     //populate List with the search results
     if(this.props.targetfield === this.props.name) {
       var List = this.props.lsr.map((item) =>
-          <p className="lsr" onClick={(event) => this.props.lsrSelect(event)} 
+          <p className="lsr" onClick={(event) => this.props.lsrselect(event)} 
               id={item[Object.keys(item)[0]]} 
               key={item[Object.keys(item)[0]]}>{item[Object.keys(item)[1]]}
           </p>

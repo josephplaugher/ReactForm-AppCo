@@ -15,7 +15,7 @@ class Form extends React.Component {
         };
         this.onSubmit = this.onSubmit.bind(this);
         this.onChange = this.onChange.bind(this);
-        this.lsrSelect = this.lsrSelect.bind(this);
+        this.lsrselect = this.lsrselect.bind(this);
         this.submitData = this.submitData.bind(this);
         this.restoreInputHandler = this.restoreInputHandler.bind(this);
     }
@@ -35,6 +35,7 @@ class Form extends React.Component {
         const value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
         var lsSource = [name][0];
+        console.log(lsSource, name)
         //clear the error on resume typing
         this.setState({
             userNotify: {},
@@ -53,22 +54,23 @@ class Form extends React.Component {
         }
     }
 
-    rebuildFormData = (name, value, lsSource) => {
+    rebuildFormData = (name, value,lsSource) => {
         //place updated data into state
         //check for possible arrays
         let newVals = Object.assign({}, this.state.formData);
         newVals[name] = value;
+        console.log(newVals)
         this.setState({
             [name]: value,
-            lsSource: name,
+            [lsSource]: name,
             formData: newVals
         });
     }
 
-    runLiveSearch(ls, name, value, lsSource) {
+    runLiveSearch(ls, name, value) {
         //get a list of options as the user types ,like Google live search
         //set the name of the location to place the search result. The inputs must have a "lsr={this.state.lsr}""
-        let targetfield = lsSource;
+        let targetfield = name;
         //first, if the input change leaves the field blank,
         //clear the options list
         if (value === '') {
@@ -106,16 +108,17 @@ class Form extends React.Component {
         });
     }
 
-    lsrSelect = (event) => {
+    lsrselect = (event) => {
         //get the value of the clicked search result and place it into the form field
         //then clear the search result list
         let input = this.state.lsSource;
-        let toClear = 'lsr' + [input];
         this.setState({
-            [toClear]: ''
+            lsr: []
         });
-        this.rebuildFormData(input, event.target.id, input);
-        this.autoFill(input, event.target.id);
+        this.rebuildFormData(input, event.target.innerHTML, input);
+        if(typeof this.props.autoFill !== 'undefined') {
+            this.autoFill(input, event.target.id);
+        }
     }
 
     autoFill = (id, val) => {
@@ -200,6 +203,7 @@ class Form extends React.Component {
                 onChange: this.onChange,
                 error: this.state.userNotify[child.props.name],
                 lsr: this.state.lsr,
+                lsrselect: this.lsrselect,
                 targetfield: this.state.targetfield
             })
         );
