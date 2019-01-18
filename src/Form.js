@@ -35,7 +35,6 @@ class Form extends React.Component {
         const value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
         var lsSource = [name][0];
-        console.log(lsSource, name)
         //clear the error on resume typing
         this.setState({
             userNotify: {},
@@ -46,11 +45,14 @@ class Form extends React.Component {
         //place updated data into state
         this.rebuildFormData(name, value, lsSource);
        
-        //run live search if applicable to current input, not othewise
-        const ls = new LiveSearch(this.props.lsa);
-        const list = ls.getLSA();
-        if (list.includes(name)) {
-            this.runLiveSearch(ls, name, value, lsSource);
+        //run live search if turned on with liveSearch prop
+        if(this.props.LiveSearch === true) {
+            const ls = new LiveSearch(this.props.lsa);
+            const list = ls.getLSA();
+            //run live search if applicable to current input, not othewise
+            if (list.includes(name)) {
+                this.runLiveSearch(ls, name, value, lsSource);
+            }
         }
     }
 
@@ -59,7 +61,6 @@ class Form extends React.Component {
         //check for possible arrays
         let newVals = Object.assign({}, this.state.formData);
         newVals[name] = value;
-        console.log(newVals)
         this.setState({
             [name]: value,
             [lsSource]: name,
@@ -197,17 +198,28 @@ class Form extends React.Component {
     }
  
     render() {
-        const inputs = React.Children.map(this.props.children, child =>
-            React.cloneElement(child, {
-                value: this.state.value,
-                onChange: this.onChange,
-                error: this.state.userNotify[child.props.name],
-                lsr: this.state.lsr,
-                lsrselect: this.lsrselect,
-                targetfield: this.state.targetfield
-            })
-        );
-            
+        var inputs;
+        if(this.props.LiveSearch === true) {
+            inputs = React.Children.map(this.props.children, child =>
+                React.cloneElement(child, {
+                    value: this.state.value,
+                    onChange: this.onChange,
+                    error: this.state.userNotify[child.props.name],
+                    lsr: this.state.lsr,
+                    lsrselect: this.lsrselect,
+                    targetfield: this.state.targetfield
+                })
+            );
+        } else {
+            inputs = React.Children.map(this.props.children, child =>
+                React.cloneElement(child, {
+                    value: this.state.value,
+                    onChange: this.onChange,
+                    error: this.state.userNotify[child.props.name],
+                })
+            );
+        }
+
         return (
             <div id="form-container">
                 <p className="formTitle">{this.props.formTitle}</p>

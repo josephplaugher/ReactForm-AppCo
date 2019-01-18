@@ -39,7 +39,9 @@ class Input extends React.Component {
           onChange={this.props.onChange}
           autoComplete="off"
         />
-        <div id="liveSearchResult" className="search-result">{List}</div>
+        {this.props.lsr ? (
+          <div id="liveSearchResult" className="search-result">{List}</div>
+        ): ( null )}
       </div>
     )
   }
