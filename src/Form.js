@@ -24,10 +24,29 @@ class Form extends React.Component {
         var inputs = {}
         React.Children.map(this.props.children, child => {
             if(child.type.name === 'Input' || child.type.name === 'TextArea') {
-                inputs[child.props.name] = '';
+                for(var value in this.props.prepopulate) {
+                    console.log('pre: ', value, child.props.name, 'the val', this.props.prepopulate[value])
+                    if(value === child.props.name) {
+                        console.log('equal')
+                        inputs[child.props.name] = this.props.prepopulate[value];
+                    } else {
+                        console.log('else...')
+                       // inputs[child.props.name] = '';
+                    }
+                }
             }
         });    
+
         this.setState({ formData: inputs});
+       /*
+        if(typeof this.props.prepopulate !== 'undefined') {
+            console.log('pre: ', this.props.prepopulate)
+            let names = this.props.prepopulate
+            for(var value in names) {
+                this.rebuildFormData(value, names[value])
+            }
+        }
+        */
     }
 
     onChange = (event) => {
@@ -57,10 +76,12 @@ class Form extends React.Component {
     }
 
     rebuildFormData = (name, value,lsSource) => {
+        console.log('rebuild: ', name, value)
         //place updated data into state
         //check for possible arrays
         let newVals = Object.assign({}, this.state.formData);
         newVals[name] = value;
+        console.log('newvals: ', newVals)
         this.setState({
             [name]: value,
             [lsSource]: name,

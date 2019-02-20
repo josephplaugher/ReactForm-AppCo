@@ -35,7 +35,7 @@ class Input extends React.Component {
           type={type}
           id={this.props.name}
           name={this.props.name}
-          value={this.props.prePopVal || this.props.value}
+          value={this.props.value}
           onChange={this.props.onChange}
           autoComplete="off"
         />
