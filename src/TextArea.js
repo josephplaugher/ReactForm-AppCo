@@ -11,19 +11,19 @@ class TextArea extends React.Component {
     }
 
     return (
-      <div className="input-container">
+      <div className="rfa_input-container">
         <p className={this.props.labelClass}>{this.props.label} </p><br />
-         <textarea className="textarea"
-          id={this.props.name}
+         <textarea className="rfa_textarea"
+          id={this.props.id}
           name={this.props.name}
           onChange={this.props.onChange}
           value={this.props.value}
           rows={this.props.rows}
           cols={this.props.cols}
         />
-        <p className={this.props.textAreaErrorClass}>{this.props.error} </p>
+        <p className="rfa_textarea-errror-class">{this.props.error} </p>
         { this.props.lsr ? (
-        <div id={lsr} className="search-result">{this.props.lsr}</div>
+        <div id={lsr} className="rfa_search-result">{this.props.lsr}</div>
         ) : ( null )}
       </div>
     );
