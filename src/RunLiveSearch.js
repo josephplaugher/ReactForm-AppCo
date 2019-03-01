@@ -1,15 +1,13 @@
 import React from "react";
 
-const RunLiveSearch = (name, value, lsSource, ls, lsRoute, rfa_headers) => {
+const RunLiveSearch = (name, value, ls, lsRoute, rfa_headers) => {
   console.log("run live search -name: ", name);
   //get a list of options as the user types,like when using Google to search.
   //set the name of the location to place the search result.
   //The inputs must have a "lsr={this.state.lsr[inputname]}" property
-  let targetField = "lsr" + lsSource;
-  let list = ls.getLSA();
   //first, if the input change leaves the field blank, clear the options list
   if (value === "") {
-    const returnObj = { targetField: targetField, newList: "" };
+    const returnObj = "";
     console.log("blank result: ", returnObj);
     return returnObj;
     //if the input value is not blank, fetch the options
@@ -19,12 +17,12 @@ const RunLiveSearch = (name, value, lsSource, ls, lsRoute, rfa_headers) => {
     prom.then(res => {
       console.log("about to set lsr list");
       // place the options into state in a result set component
-      SetLSRList(res, targetField);
+      SetLSRList(res);
     });
   } //else
 };
 
-const SetLSRList = (res, targetField) => {
+const SetLSRList = res => {
   console.log("set lsr list");
   //if there is no result, set a message for that, else, get the results from the "lsrResult" return object.
   let list = res.data.lsrResult;
@@ -47,7 +45,7 @@ const SetLSRList = (res, targetField) => {
     ));
   }
   //place the "newList" element into state
-  const returnObj = { targetField: targetField, newList: newList };
+  const returnObj = newList;
   console.log("non blank result: ", returnObj);
   return returnObj;
 };

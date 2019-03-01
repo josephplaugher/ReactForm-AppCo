@@ -39,18 +39,20 @@ class FormClass extends React.Component {
       let list = ls.getLSA();
       //run live search if applicable to current input, not othewise
       if (list.includes(event.target.name)) {
-        console.log("ls source: ", newState.lsSource);
-        var searchRes = RunLiveSearch(
+        const name = event.target.name;
+        var lsSource = [name][0];
+        console.log("ls source: ", lsSource);
+        var targetField = "lsr" + lsSource;
+        var newList = RunLiveSearch(
           event.target.name,
           event.target.value,
-          newState.lsSource,
           ls,
           this.lsRoute,
           this.rfa_headers
         );
-        let tf = searchRes.targetField;
+        console.log("tr: ", [targetField]);
         this.setState({
-          [tf]: searchRes.newList
+          [targetField]: newList
         });
       }
     }
