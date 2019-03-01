@@ -33,7 +33,7 @@ class FormClass extends React.Component {
     );
     //run live seach if its turned on in the descendant class
     if (this.useLiveSearch) {
-      console.log("use live search ");
+      // console.log("use live search ");
 
       let ls = new LiveSearch(this.lsa);
       let list = ls.getLSA();
@@ -41,18 +41,20 @@ class FormClass extends React.Component {
       if (list.includes(event.target.name)) {
         const name = event.target.name;
         var lsSource = [name][0];
-        console.log("ls source: ", lsSource);
         var targetField = "lsr" + lsSource;
-        var newList = RunLiveSearch(
+        var setList = ls.search(
           event.target.name,
           event.target.value,
-          ls,
           this.lsRoute,
           this.rfa_headers
         );
-        console.log("tr: ", [targetField]);
-        this.setState({
-          [targetField]: newList
+        setList.then(newList => {
+          // var newList = ls.getLSRList();
+          // console.log("tr: ", [targetField]);
+          console.log("newlist: ", newList);
+          this.setState({
+            [targetField]: newList
+          });
         });
       }
     }
