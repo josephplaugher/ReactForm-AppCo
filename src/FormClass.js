@@ -21,53 +21,45 @@ class FormClass extends React.Component {
 
   rfa_onChange = event => {
     let newState = OnChange(event, this.state.userNotify);
-    this.setState({
-      userNotify: newState.userNotify,
-      lsSource: newState.lsSource
-    });
-    //place updated data into state
     this.rebuildFormData(
       newState.rebuildFormData.name,
       newState.rebuildFormData.value,
-      newState.rebuildFormData.lsSource
+      newState.userNotify
     );
     //run live seach if its turned on in the descendant class
     if (this.useLiveSearch) {
-      // console.log("use live search ");
-
       let ls = new LiveSearch(this.lsa);
       let list = ls.getLSA();
       //run live search if applicable to current input, not othewise
       if (list.includes(event.target.name)) {
         const name = event.target.name;
-        var lsSource = [name][0];
-        var targetField = "lsr" + lsSource;
+        var targetField = "lsr" + [name][0];
         var setList = ls.search(
           event.target.name,
           event.target.value,
           this.lsRoute,
-          this.rfa_headers
+          this.rfa_headers,
+          this.lsrSelect
         );
         setList.then(newList => {
-          // var newList = ls.getLSRList();
-          // console.log("tr: ", [targetField]);
-          console.log("newlist: ", newList);
           this.setState({
-            [targetField]: newList
+            [targetField]: newList,
+            //set lsSource to be used later in the lsrSelect callback
+            lsSource: newState.lsSource
           });
         });
       }
     }
   };
 
-  rebuildFormData = (name, value, lsSource) => {
+  rebuildFormData = (name, value, userNotify) => {
     //place updated data into state
     let newVals = Object.assign({}, this.state.formData);
     newVals[name] = value;
     this.setState({
       [name]: value,
-      lsSource: name,
-      formData: newVals
+      formData: newVals,
+      userNotify: userNotify
     });
   };
 
@@ -80,7 +72,7 @@ class FormClass extends React.Component {
       [toClear]: ""
     });
     //update the form state with the newly selected value from the live search
-    this.rebuildFormData(input, event.target.id, input);
+    this.rebuildFormData(input, event.target.id, "");
   };
 
   rfa_onSubmit = event => {

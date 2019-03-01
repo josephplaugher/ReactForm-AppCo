@@ -12,6 +12,7 @@ const OnChange = (event, userNotify) => {
     rebuildFormData: {
       name: name,
       value: value,
+      //set lsSource to be used later in the lsrSelect callback
       lsSource: lsSource
     }
   };
