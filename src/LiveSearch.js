@@ -10,6 +10,7 @@ class LiveSearch {
 
   getLSA = () => {
     //get the list of fields that will trigger a live search
+    console.log("ls array: ", this.lsa);
     return this.lsa;
   };
 

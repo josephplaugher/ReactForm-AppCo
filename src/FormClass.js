@@ -1,4 +1,6 @@
 import React from "react";
+import OnChange from "./OnChange";
+import RunLiveSearch from "./RunLiveSearch";
 import Validate from "./Validate";
 import Ajax from "./Ajax";
 import LiveSearch from "./LiveSearch";
@@ -18,26 +20,38 @@ class FormClass extends React.Component {
   }
 
   rfa_onChange = event => {
-    const target = event.target;
-    const value = target.type === "checkbox" ? target.checked : target.value;
-    const name = target.name;
-    var lsSource = [name][0];
-    //clear any previously set errors on resume typing
-    let clEr = Object.assign({}, this.state.userNotify);
-    clEr[name] = "";
+    let newState = OnChange(event, this.state.userNotify);
     this.setState({
-      userNotify: clEr,
-      lsSource: lsSource
+      userNotify: newState.userNotify,
+      lsSource: newState.lsSource
     });
     //place updated data into state
-    this.rebuildFormData(name, value, lsSource);
+    this.rebuildFormData(
+      newState.rebuildFormData.name,
+      newState.rebuildFormData.value,
+      newState.rebuildFormData.lsSource
+    );
     //run live seach if its turned on in the descendant class
     if (this.useLiveSearch) {
+      console.log("use live search ");
+
       let ls = new LiveSearch(this.lsa);
       let list = ls.getLSA();
       //run live search if applicable to current input, not othewise
-      if (list.includes(name)) {
-        this.runLiveSearch(name, value, lsSource, ls);
+      if (list.includes(event.target.name)) {
+        console.log("ls source: ", newState.lsSource);
+        var searchRes = RunLiveSearch(
+          event.target.name,
+          event.target.value,
+          newState.lsSource,
+          ls,
+          this.lsRoute,
+          this.rfa_headers
+        );
+        let tf = searchRes.targetField;
+        this.setState({
+          [tf]: searchRes.newList
+        });
       }
     }
   };
@@ -52,57 +66,6 @@ class FormClass extends React.Component {
       formData: newVals
     });
   };
-
-  runLiveSearch(name, value, lsSource, ls) {
-    //get a list of options as the user types,like when using Google to search.
-    //set the name of the location to place the search result.
-    //The inputs must have a "lsr={this.state.lsr[inputname]}" property
-    let targetField = "lsr" + lsSource;
-    let list = ls.getLSA();
-    //first, if the input change leaves the field blank, clear the options list
-    if (value === "") {
-      this.setState({
-        [targetField]: ""
-      });
-      //if the input value is not blank, fetch the options
-    } else {
-      if (list.includes(name)) {
-        // get the options from the database
-        let prom = ls.search(name, value, this.lsRoute, this.rfa_headers);
-        prom.then(res => {
-          // place the options into state in a result set component
-          this.setLSRList(res, targetField);
-        });
-      }
-    } //else
-  }
-
-  setLSRList(res, targetField) {
-    //if there is no result, set a message for that, else, get the results from the "lsrResult" return object.
-    let list = res.data.lsrResult;
-    let newList;
-    // on the server, set the message desired when no results are found
-    // onto the "nr" object
-    if (res.data.nr) {
-      newList = res.data.nr;
-    } else {
-      // build the result set element
-      newList = list.map(item => (
-        <p
-          className="lsr"
-          onClick={event => this.lsrSelect(event)}
-          id={item[Object.keys(item)[0]]}
-          key={item[Object.keys(item)[0]]}
-        >
-          {item[Object.keys(item)[0]]}
-        </p>
-      ));
-    }
-    //place the "newList" element into state
-    this.setState({
-      [targetField]: newList
-    });
-  }
 
   lsrSelect = event => {
     //get the value of the clicked search result and place it into the form field
