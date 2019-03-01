@@ -1,28 +1,30 @@
-import Ajax from './Ajax'
+import Ajax from "./Ajax";
 
 class LiveSearch {
-    constructor(lsa){
-        //Set live search array. 
-        //this determines what fields will
-        //trigger a live search
-        this.lsa = lsa
-    }
+  constructor(lsa) {
+    //Set live search array.
+    //this determines what fields will
+    //trigger a live search
+    this.lsa = lsa;
+  }
 
-    getLSA = () => {
-        return this.lsa;
-    }
+  getLSA = () => {
+    //get the list of fields that will trigger a live search
+    return this.lsa;
+  };
 
-    search = (name, value, url) => {
-        return new Promise( (resolve, reject) => {
-        Ajax.get(url + '/name/' + name + '/value/' + value)
-            .then((res) => {
-                resolve(res)
-            })
-            .catch((error) => {
-                reject(error)
-            })
+  search = (name, value, url, headers) => {
+    // set and return the search promise
+    return new Promise((resolve, reject) => {
+      Ajax.get(url + "/name/" + name + "/value/" + value, headers)
+        .then(res => {
+          resolve(res);
+        })
+        .catch(error => {
+          reject(error);
         });
-    }
+    });
+  };
 }
 
 export default LiveSearch;

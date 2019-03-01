@@ -1,49 +1,48 @@
-import React from 'react'
-import Validate from './Validate'
-import Ajax from './Ajax'
-import LiveSearch from './LiveSearch'
+import React from "react";
+import Validate from "./Validate";
+import Ajax from "./Ajax";
+import LiveSearch from "./LiveSearch";
 
-class FormClass extends React.Component{
+class FormClass extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      table: [],
       userNotify: {},
       formData: {}
     };
-    this.route = '';
+    this.route = "";
     this.rfa_onSubmit = this.rfa_onSubmit.bind(this);
     this.rfa_onChange = this.rfa_onChange.bind(this);
     this.lsrSelect = this.lsrSelect.bind(this);
     this.submitData = this.submitData.bind(this);
   }
 
-  rfa_onChange = (event) => {
+  rfa_onChange = event => {
     const target = event.target;
-    const value = target.type === 'checkbox' ? target.checked : target.value;
+    const value = target.type === "checkbox" ? target.checked : target.value;
     const name = target.name;
     var lsSource = [name][0];
-    //clear the error on resume typing
+    //clear any previously set errors on resume typing
     let clEr = Object.assign({}, this.state.userNotify);
-    clEr[name] = '';
+    clEr[name] = "";
     this.setState({
       userNotify: clEr,
       lsSource: lsSource
     });
     //place updated data into state
-    this.rebuildFormData(name,value,lsSource);
+    this.rebuildFormData(name, value, lsSource);
     //run live seach if its turned on in the descendant class
-    if(this.useLiveSearch) {
+    if (this.useLiveSearch) {
       let ls = new LiveSearch(this.lsa);
-      let list = ls.getLSA(); 
+      let list = ls.getLSA();
       //run live search if applicable to current input, not othewise
-      if(list.includes(name)){
-        this.runLiveSearch(name, value, lsSource,ls);
+      if (list.includes(name)) {
+        this.runLiveSearch(name, value, lsSource, ls);
       }
     }
-  }
+  };
 
-  rebuildFormData = (name,value,lsSource) => {
+  rebuildFormData = (name, value, lsSource) => {
     //place updated data into state
     let newVals = Object.assign({}, this.state.formData);
     newVals[name] = value;
@@ -52,121 +51,123 @@ class FormClass extends React.Component{
       lsSource: name,
       formData: newVals
     });
-  }
+  };
 
-  runLiveSearch(name, value, lsSource,ls) {
-    //get a list of options as the user types ,like Google live search
-    //set the name of the location to place the search result. The inputs must have a "lsr={this.state.lsr[inputname]}""
-    let targetField = 'lsr' + lsSource;
-    let list = ls.getLSA(); 
+  runLiveSearch(name, value, lsSource, ls) {
+    //get a list of options as the user types,like when using Google to search.
+    //set the name of the location to place the search result.
+    //The inputs must have a "lsr={this.state.lsr[inputname]}" property
+    let targetField = "lsr" + lsSource;
+    let list = ls.getLSA();
     //first, if the input change leaves the field blank, clear the options list
-    if(value === ''){
+    if (value === "") {
       this.setState({
-        [targetField]: ''
+        [targetField]: ""
       });
-    //if the input value is not blank, fetch the options
-    }else{
-      if(list.includes(name)){
-        let prom = ls.search(name, value,this.lsRoute);
-        prom.then( (res) => {
-          this.setLSRList(res,targetField);
-        })
+      //if the input value is not blank, fetch the options
+    } else {
+      if (list.includes(name)) {
+        // get the options from the database
+        let prom = ls.search(name, value, this.lsRoute, this.rfa_headers);
+        prom.then(res => {
+          // place the options into state in a result set component
+          this.setLSRList(res, targetField);
+        });
       }
-    }//else
+    } //else
   }
 
   setLSRList(res, targetField) {
-    //if there is not result, set a message for that, else, set the results into state
+    //if there is no result, set a message for that, else, get the results from the "lsrResult" return object.
     let list = res.data.lsrResult;
     let newList;
-    if(res.data.nr){ 
+    // on the server, set the message desired when no results are found
+    // onto the "nr" object
+    if (res.data.nr) {
       newList = res.data.nr;
-    }else{
-      newList = list.map((item) => 
-          <p className="lsr" 
-            onClick={(event) => this.lsrSelect(event)} 
-            id={item[Object.keys(item)[0]]} 
-            key={item[Object.keys(item)[0]]}
-          >
+    } else {
+      // build the result set element
+      newList = list.map(item => (
+        <p
+          className="lsr"
+          onClick={event => this.lsrSelect(event)}
+          id={item[Object.keys(item)[0]]}
+          key={item[Object.keys(item)[0]]}
+        >
           {item[Object.keys(item)[0]]}
-          </p>
-       );
+        </p>
+      ));
     }
-    //place the "list" value into state
-      this.setState({
-        [targetField]: newList
-      });
+    //place the "newList" element into state
+    this.setState({
+      [targetField]: newList
+    });
   }
 
-  lsrSelect = (event) => {  
+  lsrSelect = event => {
     //get the value of the clicked search result and place it into the form field
     //then clear the search result list
     let input = this.state.lsSource;
-    let toClear = 'lsr' + [input];
+    let toClear = "lsr" + [input];
     this.setState({
-      [toClear]: ''
+      [toClear]: ""
     });
-    this.rebuildFormData(input,event.target.id,input);
-    // this.autoFill(input, event.target.id);
-  }
+    //update the form state with the newly selected value from the live search
+    this.rebuildFormData(input, event.target.id, input);
+  };
 
-  // autoFill = (id, val) => {
-  //   const autofill = new AutoFill();
-  //   var dest = autofill.getRef(id);
-  //   Ajax.get(this.autoFillRoute + "/" + id + "/"+ val)
-  //   .then((res) => {
-  //     if(res.data.results){
-  //       let obj = res.data.results;
-  //       let val;
-  //       for(var key in obj) {
-  //         val = obj[key];
-  //       }
-  //       this.rebuildFormData(dest,val);
-  //     }
-  //   })
-  // }
-
-  rfa_onSubmit = (event) => {
+  rfa_onSubmit = event => {
+    // begin the form submission process
     event.preventDefault();
-    console.log('submit', this.state.formData)
+    console.log("submit", this.state.formData);
+    // run user side form data validation, this will be repeated on the server
     let val = new Validate(this.state.formData, this.valRules);
     let prom = val.isError();
-    prom.then( (error) => {
-        if(error.hasError){ 
-          console.log('error: ', error)
-          this.setState({
-            userNotify: error,
-            validForm: false
-          })
+    prom.then(error => {
+      if (error.hasError) {
+        if (
+          this.valRules.mode === "debug" ||
+          this.valRules.mode === "development"
+        ) {
+          console.log(
+            `ReactForm-AppCo Validation Error 
+          (this message will only occur in debug or development mode): `,
+            error
+          );
         }
-        if(!error.hasError){
-          console.log('no error')
-          this.setState({
-            validForm: true
-          })
-          this.submitData();
+        //set the error object onto the application input
+        this.setState({
+          userNotify: error
+        });
+      }
+      if (!error.hasError) {
+        if (
+          this.valRules.mode === "debug" ||
+          this.valRules.mode === "development"
+        ) {
+          console.log(`ReactForm-AppCo Validation: No errors`);
         }
-      }) 
-  }
+        //when no errors exist, go ahead and submit the form
+        this.submitData();
+      }
+    });
+  };
 
   submitData = () => {
-    console.log('submit data')
+    console.log("formclass");
     let bodyData;
-    if(typeof this.extraData !== 'undefined') {
-        bodyData = Object.assign(this.extraData, this.state.formData);
+    //if there is other data that needs to be sent with form submission
+    // but won't be provided via an input
+    // add it to the "extraData" state object.
+    if (typeof this.extraData !== "undefined") {
+      bodyData = Object.assign(this.extraData, this.state.formData);
     } else {
-        bodyData = this.state.formData;
+      bodyData = this.state.formData;
     }
-    Ajax.post(this.route, bodyData)
-    .then((res) => {
-      this.response(res)
-    })
-  }
-
-  //controlls for the light box on most pages
-  closeLightBox = () => {
-    this.setState({dataView: false});
-  }
+    Ajax.post(this.route, bodyData, this.rfa_headers).then(res => {
+      this.response(res);
+    });
+  };
 }
 
 export default FormClass;
