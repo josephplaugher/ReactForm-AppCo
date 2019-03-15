@@ -1,6 +1,7 @@
 import React from "react";
 import OnChange from "./OnChange";
 import OnSubmit from "./OnSubmit";
+import SubmitData from "./SubmitData";
 import RunLiveSearch from "./RunLiveSearch";
 import Validate from "./Validate";
 import Ajax from "./Ajax";
@@ -17,7 +18,6 @@ class FormClass extends React.Component {
     this.rfa_onSubmit = this.rfa_onSubmit.bind(this);
     this.rfa_onChange = this.rfa_onChange.bind(this);
     this.lsrSelect = this.lsrSelect.bind(this);
-    this.submitData = this.submitData.bind(this);
   }
 
   rfa_onChange = event => {
@@ -85,24 +85,18 @@ class FormClass extends React.Component {
       if (submit.validForm === true) {
         // validForm is set to true is no errors exist
         // and the submit data function is called
-        this.submitData();
+        var complete = SubmitData(
+          this.state.formData,
+          this.extraData,
+          this.route,
+          this.rfa_headers
+        );
+        complete.then(resp => {
+          this.response(resp);
+        });
+      } else {
+        this.setState({ userNotify: submit.userNotify });
       }
-    });
-  };
-
-  submitData = () => {
-    console.log("formclass");
-    let bodyData;
-    //if there is other data that needs to be sent with form submission
-    // but won't be provided via an input
-    // add it to the "extraData" state object.
-    if (typeof this.extraData !== "undefined") {
-      bodyData = Object.assign(this.extraData, this.state.formData);
-    } else {
-      bodyData = this.state.formData;
-    }
-    Ajax.post(this.route, bodyData, this.rfa_headers).then(res => {
-      this.response(res);
     });
   };
 }
