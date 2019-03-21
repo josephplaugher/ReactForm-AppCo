@@ -1,0 +1,47 @@
+{
+  "name": "reactform-appco",
+  "version": "1.0.5",
+  "description": "A full featured form component including live search, conditional autofill, and validation",
+  "main": "dist/bundle.js",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "webpack --config webpack-dev.config.js",
+    "build": "webpack --config webpack-prod.config.js",
+    "prepublish": "npm run build"
+  },
+  "keywords": [
+    "form",
+    "validation",
+    "live search",
+    "ajax",
+    "react"
+  ],
+  "author": "Joseph",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "eslint": "^5.5.0",
+    "moment": "^2.22.2",
+    "nodemon": "^1.18.4",
+    "react": "^16.7.0",
+    "react-dom": "^16.4.2"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.0.0",
+    "@babel/core": "^7.0.0",
+    "@babel/plugin-proposal-class-properties": "^7.0.0",
+    "@babel/plugin-proposal-object-rest-spread": "^7.0.0",
+    "@babel/preset-env": "^7.0.0",
+    "@babel/preset-react": "^7.0.0",
+    "babel-core": "^6.26.3",
+    "babel-loader": "^8.0.1",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-react": "^6.24.1",
+    "webpack": "^4.17.1",
+    "webpack-cli": "^3.1.0",
+    "webpack-merge": "^4.1.4"
+  }
+}
