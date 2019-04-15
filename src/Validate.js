@@ -2,24 +2,31 @@ class validate {
 	constructor(inputs, valRules) {
 		this.error = {}
 		this.inputs = inputs
-		this.valRules = valRules
+		this.settings = valRules.settings
+		this.valRules = valRules.rules
 		this.preValidation()
 		this.startValidation()
 	}
 
 	preValidation = () => {
-		return this.valRules.mode === 'debug'
-			? console.log(
-					'validation module running in debug mode. No rules will be enforced'
-			  )
-			: this.valRules.mode === 'development'
-			? this.valRules.log.dev('Validation running in development mode')
-			: this.valRules.mode === 'production'
-			? this.valRules.log.prod('Validation running in production mode')
-			: //only start validation if not in debug mode
-			this.valRules.mode !== 'debug'
-			? this.startValidation()
-			: this.valRules.log.dev(null)
+		if (this.settings.mode === 'debug') {
+			this.settings.log.dev('ReactForm-AppCo prevalidation check: ')
+			this.settings.log.dev(
+				'validation running in debug mode. No rules will be enforced'
+			)
+		}
+		if (this.settings.mode === 'development') {
+			this.settings.log.dev('ReactForm-AppCo prevalidation check: ')
+			this.settings.log.dev('Validation running in development mode')
+		}
+		if (this.settings.mode === 'production') {
+			this.settings.log.prod('ReactForm-AppCo prevalidation check: ')
+			this.settings.log.dev('Validation running in production mode')
+		}
+		//only start validation if not in debug mode
+		if (this.settings.mode !== 'debug') {
+			this.startValidation()
+		}
 	}
 
 	startValidation = () => {
