@@ -1,6 +1,6 @@
 {
 	"name": "reactform-appco",
-	"version": "1.0.8",
+	"version": "1.0.9",
 	"description": "A full featured form component including live search, conditional autofill, and validation",
 	"main": "dist/bundle.js",
 	"files": [
