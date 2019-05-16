@@ -9,6 +9,17 @@ class validate {
 	}
 
 	preValidation = () => {
+		if (!this.settings) {
+			console.error('you must define a valRules.settings object')
+		}
+		if (!this.valRules) {
+			console.error('you must define a valRules.rules object')
+		}
+		if (!this.settings.mode) {
+			console.error(
+				'you must set a valRules.settings.mode to either "production" or "development"'
+			)
+		}
 		if (this.settings.mode === 'debug') {
 			this.settings.log.dev('ReactForm-AppCo prevalidation check: ')
 			this.settings.log.dev(

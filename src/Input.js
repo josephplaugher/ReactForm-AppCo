@@ -32,7 +32,7 @@ class Input extends React.Component {
 					className='rfa_textinput'
 				/>
 				{this.props.lsr ? (
-					<div id={lsr} className='search-result'>
+					<div id={lsr} className='rfa_search-result'>
 						{this.props.lsr}
 					</div>
 				) : null}

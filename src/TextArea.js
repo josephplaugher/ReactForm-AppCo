@@ -5,10 +5,6 @@ class TextArea extends React.Component {
 		super(props)
 	}
 	render() {
-		if (this.props.lsr) {
-			var lsr = 'lsr' + this.props.name
-		}
-
 		return (
 			<div className='rfa_input-container'>
 				<p className='rfa_textarea-label'>{this.props.label} </p>
