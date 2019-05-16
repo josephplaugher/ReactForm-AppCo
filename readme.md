@@ -10,7 +10,7 @@ npm install reactform-appco
 ######Basic Usage
 At first glance, the primary class in this package, FormClass, appears to violate a principal of React.
 The React developers strongly urge users NOT to use inheritence with React.Component, but rather to use
-composition to build the UI. This is what what FormClass does. FormClass does not render anything to the UI. When you extend FormClass, you are bringing the logic that helps to effortlessly process user forms into
+composition to build the UI. This is what FormClass does. FormClass does not render anything to the UI. When you extend FormClass, you are bringing the logic that helps to effortlessly process user forms into
 the existing rendered UI. You must extend FormClass for all of this to work.
 The Input, Button and TextArea components are additional features that make it easy to build your form inputs.
 They do in fact render to the UI. You can use FormClass with your own input and button components by
@@ -73,27 +73,26 @@ export default App
 There are a few properties the Input compent will accept.
 name: will contain the name of the input upon form submission
 label: label will be what the user sees as a titel for the input
-value: must be the state object for that input. I.E., the value prop for the "email" input must
-be "this.state.email".
-onChange: to use the functionality in the FormClass, onChange must equal "this.fra_onChange".
-If it is not, the form will not receive and process the input.
+value: must be the state object for that input. I.E., the value prop for the "email" input must be "this.state.email". onChange: to use the functionality in the FormClass, onChange must equal "this.rfa_onChange". If it is not, the form will not receive and process the input.
 AutoComplete: accepts a boolean. Allows the browser to autofill a value from a previous instance of input.
 
 ######Validation Errors
-Errors from form validation will be place in state according to the name of each input. To show validation
+Errors from form validation will be placed into state according to the name of each input. To show validation
 errors, you need to include "error={this.state.userNotify.[input name]}".
 So on the email input it would be "error={this.state.userNotify.email}".
 
 ######Live Search
-You can designate an input to include Live Search functionality by including the propery lsr={this.state.lsr[input name]} (lsr = live search result).
+You can designate an input to include Live Search functionality by including the propery lsr={this.state.lsr[input name]}. (lsr = live search result).
 So if you were searching for a username or a list of usernames, you would include "lsr={this.state.lsrusername}" as property on the username input.
 For this to work, you also must specifiy the following:
 
 ```
 this.useLiveSearch = true //turns on the live search functionality.
 this.lsRoute = [your-live-search-api-endpoint] //endpoint where your API will return the results needed
-this.lsa = ['store','item'] //an array that controlls which inputs the module will attempt to perform a live search for. This is necessary to prevent executing the Live Search function on inputs that don't need it,
-thus making unnecesary state changes. If the name of the input is in that array, Live Search will run whenever the input changes. Otherwise it will not.
+this.lsa = ['store','item'] //an array that controlls which inputs the module will attempt to perform a
+//live search for. This is necessary to prevent executing the Live Search function on inputs that don't need it,
+//thus making unnecesary state changes. If the name of the input is in that array, Live Search will run whenever
+//the input changes. Otherwise it will not.
 ```
 
 ######Live Search API Configuration.
