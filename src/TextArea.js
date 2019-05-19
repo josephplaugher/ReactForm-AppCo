@@ -8,7 +8,7 @@ class TextArea extends React.Component {
 		return (
 			<div className='rfa_input-container'>
 				<p className='rfa_textarea-label'>{this.props.label} </p>
-				<br />
+				<p className='rfa_input-error'>{this.props.error} </p>
 				<textarea
 					className='rfa_textarea'
 					id={this.props.id}
@@ -18,7 +18,6 @@ class TextArea extends React.Component {
 					rows={this.props.rows}
 					cols={this.props.cols}
 				/>
-				<p className='rfa_input-error'>{this.props.error} </p>
 			</div>
 		)
 	}
