@@ -32,7 +32,7 @@ class validate {
 		}
 		if (this.settings.mode === 'production') {
 			this.settings.log.prod('ReactForm-AppCo prevalidation check: ')
-			this.settings.log.dev('Validation running in production mode')
+			this.settings.log.prod('Validation running in production mode')
 		}
 		//only start validation if not in debug mode
 		if (this.settings.mode !== 'debug') {

@@ -19,7 +19,7 @@ const OnSubmit = (formData, valRules) => {
 					})
 				}
 				if (valRules.settings.mode === 'production') {
-					valRules.settings.log.dev({
+					valRules.settings.log.prod({
 						ReactForm_AppCo_Validation_Errors: error,
 						rules_enforced: valRules.rules
 					})

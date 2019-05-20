@@ -12,7 +12,6 @@ const SubmitData = (formData, extraData, route, headers) => {
 			bodyData = formData
 		}
 		Ajax.post(route, bodyData, headers).then((response) => {
-			console.log('ajax post')
 			resolve(response)
 		})
 	})
