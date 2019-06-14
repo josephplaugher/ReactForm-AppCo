@@ -1,6 +1,7 @@
-import FormClass from './src/FormClass';
-import Input from './src/Input';
+import FormClass from './src/FormClass'
+import Input from './src/Input'
 import TextArea from './src/TextArea'
-import Button from './src/Button';
+import Select from './src/Select'
+import Button from './src/Button'
 
-export {FormClass, Input, TextArea, Button};
+export { FormClass, Input, TextArea, Select, Button }
