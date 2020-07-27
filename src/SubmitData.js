@@ -6,7 +6,7 @@ const SubmitData = (formData, extraData, route, headers) => {
 		//if there is other data that needs to be sent with form submission
 		// but won't be provided via an input
 		// add it to the "extraData" state object.
-		if (typeof extraData !== 'undefined') {
+		if (extraData) {
 			bodyData = Object.assign(extraData, formData)
 		} else {
 			bodyData = formData
